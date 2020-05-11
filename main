@@ -1,0 +1,10 @@
+var roleHarvester = require('role.harvester');
+
+module.exports.loop = function () {
+    const creeps = Object.entries(Game.creeps);
+    creeps.map((data) => {
+        const [name, creep] = data;
+        console.log(name);
+        roleHarvester.run(creep);
+    })
+}
