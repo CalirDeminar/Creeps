@@ -1,0 +1,20 @@
+{
+    Game: {
+        reservedStorage: objectId[],
+        reservedRetrieval: objectId[],
+        [spawnName]: {
+            template: bodyParts[],
+            memory: initialCreepMemory
+        }
+    },
+    Creeps: {
+        Drone: {
+            hauling: boolean,
+            haulingTarget: objectId
+        },
+        Queen: {
+            hauling: boolean,
+            haulingTarget: objectId
+        }
+    }
+}

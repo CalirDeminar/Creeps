@@ -33,7 +33,7 @@ module.exports = {
   getStructureToHarvest: function (creep) {
     if (Memory.toStore)
       return creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-        filter: (s) => s.energy > 0 && Memory.Spawn1 === undefined,
+        filter: (s) => s.energy > 5 && Memory.Spawn1 === undefined,
       });
   },
   dropRoad: function (creep) {
