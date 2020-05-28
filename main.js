@@ -3,6 +3,7 @@ const upgrader = require("role.upgrader");
 const builder = require("role.builder");
 const repairer = require("role.repairer");
 const hauler = require("role.hauler");
+const tower = require("tower");
 const staffManager = require("staffManager");
 module.exports.loop = function () {
   // Memory Clear
@@ -33,6 +34,12 @@ module.exports.loop = function () {
       case "hauler":
         hauler.run(creep);
     }
+  }
+  const towers = Game.spawns.Spawn1.room.find(FIND_STRUCTURES, {
+    filter: (s) => s.structureType == STRUCTURE_TOWER,
+  });
+  for (let tower of towers) {
+    tower.run(tower);
   }
   staffManager.run();
 };

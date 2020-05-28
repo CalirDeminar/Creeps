@@ -1,6 +1,10 @@
-const { getStructureToHarvest, dropRoad } = require("creepUtil");
+const {
+  getStructureToHarvest,
+  getConstructionSite,
+  dropRoad,
+} = require("creepUtil");
 const upgrader = require("role.upgrader");
-const pathColour = "005eff";
+const pathColour = "#005eff"; // blue
 module.exports = {
   run: function (creep) {
     dropRoad(creep);
@@ -16,9 +20,7 @@ module.exports = {
     }
 
     if (creep.memory.working) {
-      const constructionSite = creep.pos.findClosestByPath(
-        FIND_CONSTRUCTION_SITES
-      );
+      const constructionSite = getConstructionSite(creep);
       if (constructionSite != undefined) {
         // if construction site available, do that
         if (creep.build(constructionSite) == ERR_NOT_IN_RANGE) {

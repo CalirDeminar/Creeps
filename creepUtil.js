@@ -7,9 +7,9 @@ module.exports = {
     const output = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: (s) => {
         return (
-          storage.includes(s.structureType) &&
-          (s.energy < s.energyCapacity ||
-            (s.store ? s.store.energy < 500 : false))
+          storage.includes(s.structureType) && s.energy < s.energyCapacity
+          // ||
+          //(s.store ? s.store.energy < 500 : false)
         );
       },
     });
@@ -43,8 +43,8 @@ module.exports = {
   },
   dropRoad: function (creep) {
     if (
-      creep.room.find(FIND_CONSTRUCTION_SITES).length < 3 &&
-      creep.room.controller.level > 1
+      creep.room.find(FIND_CONSTRUCTION_SITES).length < 4 &&
+      creep.room.controller.level > 2
     ) {
       creep.room.createConstructionSite(creep.pos, STRUCTURE_ROAD);
     }
@@ -57,5 +57,13 @@ module.exports = {
         );
       },
     })[0];
+  },
+  getConstructionSite: function (creep) {
+    const sites = creep.room
+      .find(FIND_CONSTRUCTION_SITES)
+      .sort(
+        (a, b) => a.progressTotal - a.progress - (b.progressTotal - b.progress)
+      );
+    return sites[0];
   },
 };

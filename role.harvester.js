@@ -2,7 +2,6 @@ const { getStructureToStore1, dropRoad } = require("creepUtil");
 const pathColour = "#ff9700";
 module.exports = {
   run: function (creep) {
-    dropRoad(creep);
     if (!creep.memory.working && creep.carry.energy == 0) {
       // if empty, set to work
       const index = Memory.toStore.filter(
@@ -43,3 +42,4 @@ module.exports = {
     }
   },
 };
+// DROP constructionSite for Container When Mining
