@@ -1,4 +1,5 @@
 const { getStructureToStore1, dropRoad } = require("creepUtil");
+const pathColour = "#ff9700";
 module.exports = {
   run: function (creep) {
     dropRoad(creep);
@@ -24,7 +25,7 @@ module.exports = {
         ? Game.getObjectById(creep.memory.target)
         : creep.pos.findClosestByPath(FIND_SOURCES);
       if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
+        creep.moveTo(source, { visualizePathStyle: { stroke: pathColour } });
       }
     } else {
       // if not working, transfer to spawn. If not in range, move into range
@@ -36,7 +37,7 @@ module.exports = {
       if (transferResult === ERR_NOT_IN_RANGE) {
         // not in range, move closer
         creep.moveTo(targetStore, {
-          visualizePathStyle: { stroke: "#ffaa00" },
+          visualizePathStyle: { stroke: pathColour },
         });
       }
     }

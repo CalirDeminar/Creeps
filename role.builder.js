@@ -1,5 +1,6 @@
 const { getStructureToHarvest, dropRoad } = require("creepUtil");
 const upgrader = require("role.upgrader");
+const pathColour = "005eff";
 module.exports = {
   run: function (creep) {
     dropRoad(creep);
@@ -23,7 +24,7 @@ module.exports = {
         if (creep.build(constructionSite) == ERR_NOT_IN_RANGE) {
           // build construction, if out of range, move into range
           creep.moveTo(constructionSite, {
-            visualizePathStyle: { stroke: "#ffaa00" },
+            visualizePathStyle: { stroke: pathColour },
           });
         }
       }
@@ -36,7 +37,7 @@ module.exports = {
       const target = getStructureToHarvest(creep);
       if (target !== undefined) {
         if (creep.withdraw(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(target, { visualizePathStyle: { stroke: "#ffaa00" } });
+          creep.moveTo(target, { visualizePathStyle: { stroke: pathColour } });
         }
       } else {
         creep.target = getStructureToHarvest(creep);
