@@ -6,11 +6,45 @@ module.exports = {
     });
     const output = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: (s) => {
-        return (
-          storage.includes(s.structureType) && s.energy < s.energyCapacity
-          // ||
-          //(s.store ? s.store.energy < 500 : false)
-        );
+        if (storage.includes(s.structureType)) {
+          switch (s.structureType) {
+            case STRUCTURE_SPAWN:
+            case STRUCTURE_EXTENSION:
+              return (
+                storage.includes(s.structureType) && s.energy < s.energyCapacity
+              );
+            case STRUCTURE_CONTAINER:
+              return s.store.energy < 5000;
+          }
+        } else {
+          return false;
+        }
+      },
+    });
+    return output;
+  },
+  getStructureToStore2: function (creep) {
+    // neaten and rename
+    const closeContainer = creep.pos.findInRange(FIND_STRUCTURES, 1, {
+      filter: { structureType: STRUCTURE_CONTAINER },
+    });
+    const output = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      filter: (s) => {
+        if ([STRUCTURE_SPAWN, STRUCTURE_EXTENSION].includes(s.structureType)) {
+          switch (s.structureType) {
+            case STRUCTURE_SPAWN:
+            case STRUCTURE_EXTENSION:
+              return (
+                [STRUCTURE_SPAWN, STRUCTURE_EXTENSION].includes(
+                  s.structureType
+                ) && s.energy < s.energyCapacity
+              );
+            case STRUCTURE_CONTAINER:
+              return s.store.energy < 5000;
+          }
+        } else {
+          return false;
+        }
       },
     });
     return output;
@@ -38,16 +72,20 @@ module.exports = {
   getStructureToHarvest: function (creep) {
     if (Memory.toStore)
       return creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-        filter: (s) => s.energy > 5 && Memory.Spawn1 === undefined,
+        filter: (s) =>
+          s.energy > 5 &&
+          Memory.Spawn1 === undefined &&
+          (s.structureType === STRUCTURE_SPAWN ||
+            s.structureType === STRUCTURE_EXTENSION),
       });
   },
   dropRoad: function (creep) {
-    if (
-      creep.room.find(FIND_CONSTRUCTION_SITES).length < 4 &&
-      creep.room.controller.level > 2
-    ) {
-      creep.room.createConstructionSite(creep.pos, STRUCTURE_ROAD);
-    }
+    //if (
+    //  creep.room.find(FIND_CONSTRUCTION_SITES).length < 4 &&
+    //  creep.room.controller.level > 3
+    //) {
+    //  creep.room.createConstructionSite(creep.pos, STRUCTURE_ROAD);
+    // }
   },
   getNearbyContainer: function (creep) {
     return creep.pos.findInRange(FIND_STRUCTURES, 2, {

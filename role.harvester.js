@@ -23,7 +23,7 @@ module.exports = {
       const source = creep.memory.target
         ? Game.getObjectById(creep.memory.target)
         : creep.pos.findClosestByPath(FIND_SOURCES);
-      if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+      if (creep.harvest(source) !== 0) {
         creep.moveTo(source, { visualizePathStyle: { stroke: pathColour } });
       }
     } else {

@@ -21,7 +21,17 @@ module.exports = {
           s.structureType != STRUCTURE_WALL &&
           s.structureType != STRUCTURE_RAMPART,
       });
-      if (structure) {
+      const tower = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: (s) =>
+          s.structureType == STRUCTURE_TOWER && s.energy / s.energyCapacity < 1,
+      });
+      if (tower) {
+        if (creep.transfer(tower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(tower, {
+            visualizePathStyle: { stroke: "#ffaa00" },
+          });
+        }
+      } else if (structure) {
         if (creep.repair(structure) == ERR_NOT_IN_RANGE) {
           creep.moveTo(structure, {
             visualizePathStyle: { stroke: "#ffaa00" },

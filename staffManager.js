@@ -1,3 +1,4 @@
+const sourceManager = require("sourceManager");
 function sumRole(role) {
   return _.sum(Game.creeps, (c) => c.memory.role === role);
 }
@@ -37,6 +38,7 @@ function log(spawn) {
   const upgraders = sumRole("upgrader");
   const builders = sumRole("builder");
   const repairers = sumRole("repairer");
+  const haulers = sumRole("hauler");
   console.log(
     `\n\n\n\n\n\n\n\n\n` +
       `Spawn: ${spawn}\n` +
@@ -45,7 +47,8 @@ function log(spawn) {
       ` Harvesters: ${harvesters}\n` +
       ` Upgraders: ${upgraders}\n` +
       ` Builders: ${builders}\n` +
-      ` Repairer: ${repairers}\n`
+      ` Repairer: ${repairers}\n` +
+      ` Hauler: ${haulers}\n`
   );
 }
 function checkVacancies(spawn) {
@@ -54,7 +57,7 @@ function checkVacancies(spawn) {
   const controllerObj = room.controller;
   const controllerDistance = controllerObj.pos.findPathTo(spawnObj).length;
   const sources = room.find(FIND_SOURCES);
-  const containers = room.find(FIND_MY_STRUCTURES, {
+  const containers = room.find(FIND_STRUCTURES, {
     filter: { structureType: STRUCTURE_CONTAINER },
   });
   const energyCap = room.energyCapacityAvailable;
@@ -64,24 +67,8 @@ function checkVacancies(spawn) {
   const upgraders = 2;
   const builders = 2;
   const repairers = 1;
-  if (Memory[spawn] === undefined || sumRole("harvesester") < sources.length) {
-    if (sumRole("harvester") < totalHarvesters) {
-      for (let sourceName in sources) {
-        const source = sources[sourceName];
-        const sourceHarvesters = sumSourceHarvester(source);
-        if (sourceHarvesters < 1) {
-          Memory[spawn] = {
-            template: emergencyHarvester(),
-            memory: { role: "harvester", target: source.id, working: false },
-          };
-        } else if (sourceHarvesters < harvestersPerSource) {
-          Memory[spawn] = {
-            template: scaleBalancedCreep(energyCap),
-            memory: { role: "harvester", target: source.id, working: false },
-          };
-        }
-      }
-    } else if (sumRole("upgrader") < upgraders) {
+  if (Memory[spawn] === undefined) {
+    if (sumRole("upgrader") < upgraders) {
       Memory[spawn] = {
         template: scaleBalancedCreep(energyCap),
         memory: { role: "upgrader", target: undefined, working: false },
@@ -97,10 +84,14 @@ function checkVacancies(spawn) {
         memory: { role: "repairer", target: undefined, working: false },
       };
     } else if (sumRole("hauler") < containers.length) {
-      Memory[spawm] = {
+      Memory[spawn] = {
         template: scaleHaulingCreep(energyCap),
         memory: { role: "hauler", target: undefined, working: false },
       };
+    }
+    for (let sourceName in sources) {
+      const source = sources[sourceName];
+      sourceManager.harvesterSetup(source);
     }
   }
 }

@@ -3,7 +3,7 @@ const upgrader = require("role.upgrader");
 const builder = require("role.builder");
 const repairer = require("role.repairer");
 const hauler = require("role.hauler");
-const tower = require("tower");
+const towerR = require("tower");
 const staffManager = require("staffManager");
 module.exports.loop = function () {
   // Memory Clear
@@ -39,7 +39,7 @@ module.exports.loop = function () {
     filter: (s) => s.structureType == STRUCTURE_TOWER,
   });
   for (let tower of towers) {
-    tower.run(tower);
+    towerR.run(tower);
   }
   staffManager.run();
 };
