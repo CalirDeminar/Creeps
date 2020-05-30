@@ -11,6 +11,9 @@ function makeHarvester(template, source) {
     memory: { role: "harvester", target: source.id, working: false },
   };
 }
+function sumRole(role) {
+  return _.sum(Game.creeps, (c) => c.memory.role === role);
+}
 function staticHarvester(energy) {
   if (energy >= 750) {
     return [
@@ -33,6 +36,15 @@ function staticHarvester(energy) {
   } else {
     return scaleBalancedCreep(energy);
   }
+}
+function scaleHaulingCreep(energy) {
+  const noParts = Math.floor(energy / 150);
+  let body = [];
+  for (let i = 0; i < noParts; i++) {
+    body.push(CARRY);
+    body.push(MOVE);
+  }
+  return body;
 }
 function emergencyHarvester() {
   return [WORK, CARRY, MOVE];
@@ -58,6 +70,17 @@ module.exports = {
     if (container) {
       if (harvesterSum < 1) {
         Memory[spawn] = makeHarvester(staticHarvester(energyCap), source);
+      } else {
+        const haulers = _.sum(
+          Game.creeps,
+          (c) => c.memory.role === "hauler" && c.memory.target === container.id
+        );
+        if (!haulers) {
+          Memory[spawn] = {
+            template: scaleHaulingCreep(energyCap),
+            memory: { role: "hauler", target: container.id, working: false },
+          };
+        }
       }
     } else {
       if (harvesterSum < 1) {

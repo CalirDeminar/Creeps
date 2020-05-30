@@ -13,11 +13,7 @@ module.exports = {
     }
 
     if (!creep.memory.working) {
-      const container = creep.room
-        .find(FIND_STRUCTURES, {
-          filter: (s) => s.structureType === STRUCTURE_CONTAINER,
-        })
-        .sort((a, b) => b.store.energy - a.store.energy)[0];
+      const container = Game.getObjectById(creep.memory.target);
       const resp = creep.withdraw(container, RESOURCE_ENERGY);
       if (resp == ERR_NOT_IN_RANGE) {
         creep.moveTo(container, { visualizePathStyle: { stroke: "#ffaa00" } });

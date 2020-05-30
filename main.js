@@ -5,6 +5,7 @@ const repairer = require("role.repairer");
 const hauler = require("role.hauler");
 const towerR = require("tower");
 const staffManager = require("staffManager");
+const constructionManager = require("constructionManager");
 module.exports.loop = function () {
   // Memory Clear
   for (let name in Memory.creeps) {
@@ -42,6 +43,7 @@ module.exports.loop = function () {
     towerR.run(tower);
   }
   staffManager.run();
+  constructionManager.buildExtensions(0);
 };
 
 // starting phases

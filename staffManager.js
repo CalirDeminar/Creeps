@@ -83,11 +83,6 @@ function checkVacancies(spawn) {
         template: scaleBalancedCreep(energyCap),
         memory: { role: "repairer", target: undefined, working: false },
       };
-    } else if (sumRole("hauler") < containers.length) {
-      Memory[spawn] = {
-        template: scaleHaulingCreep(energyCap),
-        memory: { role: "hauler", target: undefined, working: false },
-      };
     }
     for (let sourceName in sources) {
       const source = sources[sourceName];
