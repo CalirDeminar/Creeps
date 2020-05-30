@@ -16,9 +16,10 @@ module.exports = {
     const baseY = Game.spawns.Spawn1.pos.y;
     const gap = 4;
     const room = Game.spawns.Spawn1.room;
-    let currentExtensions = room.find(FIND_STRUCTURES, {
-      filter: (s) => s.structureType === STRUCTURE_EXTENSION,
-    }).length;
+    let currentExtensions =
+      room.find(FIND_STRUCTURES, {
+        filter: (s) => s.structureType === STRUCTURE_EXTENSION,
+      }).length + 1;
     let size = getSize(currentExtensions);
     let x = size * -1;
     let y = size * -1;
@@ -26,9 +27,8 @@ module.exports = {
       while (y <= size) {
         if (x === size || y === size || x === size * -1 || y === size * -1) {
           // build shit here
-          //console.log(`${baseX + x} ${baseY + y}`);
           room.createConstructionSite(
-            { x: baseX + x, y: baseY + y, roomName: room.name },
+            new RoomPosition(baseX + x, baseY + y, room.name),
             STRUCTURE_EXTENSION
           );
         }
@@ -36,6 +36,11 @@ module.exports = {
       }
       y = size * -1;
       x = x + gap;
+    }
+  },
+  buildContainers: function (room) {
+    const sources = room.find(FIND_SOURCES);
+    if (room.controller.level >= 2) {
     }
   },
 };

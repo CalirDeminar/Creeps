@@ -6,6 +6,7 @@ const hauler = require("role.hauler");
 const towerR = require("tower");
 const staffManager = require("staffManager");
 const constructionManager = require("constructionManager");
+const roomController = require("roomController");
 module.exports.loop = function () {
   // Memory Clear
   for (let name in Memory.creeps) {
@@ -41,6 +42,9 @@ module.exports.loop = function () {
   });
   for (let tower of towers) {
     towerR.run(tower);
+  }
+  for (room in Game.rooms) {
+    roomController.run(Game.rooms[room]);
   }
   staffManager.run();
   constructionManager.buildExtensions(0);

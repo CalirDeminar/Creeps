@@ -30,29 +30,9 @@ function scaleHaulingCreep(energy) {
   }
   return body;
 }
-function log(spawn) {
-  const spawnObj = Game.spawns[spawn];
-  const energyCap = spawnObj.room.energyCapacityAvailable;
-  const currentEnergy = spawnObj.room.energyAvailable;
-  const harvesters = sumRole("harvester");
-  const upgraders = sumRole("upgrader");
-  const builders = sumRole("builder");
-  const repairers = sumRole("repairer");
-  const haulers = sumRole("hauler");
-  console.log(
-    `\n\n\n\n\n\n\n\n\n` +
-      `Spawn: ${spawn}\n` +
-      `Energy: ${currentEnergy}/${energyCap}\n` +
-      `Creeps:\n` +
-      ` Harvesters: ${harvesters}\n` +
-      ` Upgraders: ${upgraders}\n` +
-      ` Builders: ${builders}\n` +
-      ` Repairer: ${repairers}\n` +
-      ` Hauler: ${haulers}\n`
-  );
-}
 function checkVacancies(spawn) {
   const spawnObj = Game.spawns[spawn];
+  let buildQueue = Memory[spawnObj.room.name].buildQueue;
   const room = spawnObj.room;
   const controllerObj = room.controller;
   const controllerDistance = controllerObj.pos.findPathTo(spawnObj).length;
@@ -73,17 +53,30 @@ function checkVacancies(spawn) {
         template: scaleBalancedCreep(energyCap),
         memory: { role: "upgrader", target: undefined, working: false },
       };
+      //buildQueue.push({
+      //  template: scaleBalancedCreep(energyCap),
+      //  memory: { role: "upgrader", target: undefined, working: false },
+      //});
     } else if (sumRole("builder") < builders) {
       Memory[spawn] = {
         template: scaleBalancedCreep(energyCap),
         memory: { role: "builder", target: undefined, working: false },
       };
+      //buildQueue.push({
+      //  template: scaleBalancedCreep(energyCap),
+      //  memory: { role: "builder", target: undefined, working: false },
+      //});
     } else if (sumRole("repairer") < repairers) {
       Memory[spawn] = {
         template: scaleBalancedCreep(energyCap),
         memory: { role: "repairer", target: undefined, working: false },
       };
+      //buildQueue.push({
+      //  template: scaleBalancedCreep(energyCap),
+      //  memory: { role: "repairer", target: undefined, working: false },
+      //});
     }
+    //Memory[spawnObj.room.name].buildQueue = buildQueue;
     for (let sourceName in sources) {
       const source = sources[sourceName];
       sourceManager.harvesterSetup(source);
@@ -105,9 +98,6 @@ module.exports = {
     for (let spawn in Game.spawns) {
       checkVacancies(spawn);
       fillVacancies(spawn);
-      if (Game.time % 5 === 0) {
-        log(spawn);
-      }
     }
   },
 };

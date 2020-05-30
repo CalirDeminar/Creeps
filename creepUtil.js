@@ -1,54 +1,5 @@
 const storage = [STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_CONTAINER];
 module.exports = {
-  getStructureToStore1: function (creep) {
-    const closeContainer = creep.pos.findInRange(FIND_STRUCTURES, 1, {
-      filter: { structureType: STRUCTURE_CONTAINER },
-    });
-    const output = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: (s) => {
-        if (storage.includes(s.structureType)) {
-          switch (s.structureType) {
-            case STRUCTURE_SPAWN:
-            case STRUCTURE_EXTENSION:
-              return (
-                storage.includes(s.structureType) && s.energy < s.energyCapacity
-              );
-            case STRUCTURE_CONTAINER:
-              return s.store.energy < 5000;
-          }
-        } else {
-          return false;
-        }
-      },
-    });
-    return output;
-  },
-  getStructureToStore2: function (creep) {
-    // neaten and rename
-    const closeContainer = creep.pos.findInRange(FIND_STRUCTURES, 1, {
-      filter: { structureType: STRUCTURE_CONTAINER },
-    });
-    const output = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: (s) => {
-        if ([STRUCTURE_SPAWN, STRUCTURE_EXTENSION].includes(s.structureType)) {
-          switch (s.structureType) {
-            case STRUCTURE_SPAWN:
-            case STRUCTURE_EXTENSION:
-              return (
-                [STRUCTURE_SPAWN, STRUCTURE_EXTENSION].includes(
-                  s.structureType
-                ) && s.energy < s.energyCapacity
-              );
-            case STRUCTURE_CONTAINER:
-              return s.store.energy < 5000;
-          }
-        } else {
-          return false;
-        }
-      },
-    });
-    return output;
-  },
   getStructureToStore: function (creep) {
     if (Memory.toStore) {
       const output = creep.pos.findClosestByPath(FIND_STRUCTURES, {

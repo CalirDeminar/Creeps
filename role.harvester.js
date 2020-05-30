@@ -1,5 +1,26 @@
-const { getStructureToStore1, dropRoad } = require("creepUtil");
+const { dropRoad } = require("creepUtil");
 const pathColour = "#ff9700";
+function getStructureToStore(creep) {
+  const storage = [STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_CONTAINER];
+  const output = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+    filter: (s) => {
+      if (storage.includes(s.structureType)) {
+        switch (s.structureType) {
+          case STRUCTURE_SPAWN:
+          case STRUCTURE_EXTENSION:
+            return (
+              storage.includes(s.structureType) && s.energy < s.energyCapacity
+            );
+          case STRUCTURE_CONTAINER:
+            return s.store.energy < 5000;
+        }
+      } else {
+        return false;
+      }
+    },
+  });
+  return output;
+}
 module.exports = {
   run: function (creep) {
     if (!creep.memory.working && creep.carry.energy == 0) {
@@ -24,12 +45,17 @@ module.exports = {
         ? Game.getObjectById(creep.memory.target)
         : creep.pos.findClosestByPath(FIND_SOURCES);
       if (creep.harvest(source) !== 0) {
-        creep.moveTo(source, { visualizePathStyle: { stroke: pathColour } });
+        const container = source.pos.findInRange(FIND_STRUCTURES, 1, {
+          filter: (s) => s.structureType === STRUCTURE_CONTAINER,
+        })[0];
+        creep.moveTo(container || source, {
+          visualizePathStyle: { stroke: pathColour },
+        });
       }
     } else {
       // if not working, transfer to spawn. If not in range, move into range
       // getting creep target every tick
-      const targetStore = getStructureToStore1(creep);
+      const targetStore = getStructureToStore(creep);
       // if target is known
       const transferResult = creep.transfer(targetStore, RESOURCE_ENERGY);
       // attempt transfer

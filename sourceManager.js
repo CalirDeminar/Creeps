@@ -61,7 +61,9 @@ function scaleBalancedCreep(energy) {
 }
 module.exports = {
   harvesterSetup: function (source) {
-    const container = source.pos.findInRange(FIND_STRUCTURES, 2, {
+    const roomId = source.room.name;
+    let buildQueue = Memory[roomId].buildQueue;
+    const container = source.pos.findInRange(FIND_STRUCTURES, 1, {
       filter: (s) => s.structureType === STRUCTURE_CONTAINER,
     })[0];
     const energyCap = source.room.energyCapacityAvailable;
@@ -70,6 +72,7 @@ module.exports = {
     if (container) {
       if (harvesterSum < 1) {
         Memory[spawn] = makeHarvester(staticHarvester(energyCap), source);
+        //buildQueue.push(makeHarvester(staticHarvester(energyCap), source));
       } else {
         const haulers = _.sum(
           Game.creeps,
@@ -80,14 +83,21 @@ module.exports = {
             template: scaleHaulingCreep(energyCap),
             memory: { role: "hauler", target: container.id, working: false },
           };
+          //buildQueue.push({
+          //  template: scaleHaulingCreep(energyCap),
+          //  memory: { role: "hauler", target: container.id, working: false },
+          //});
         }
       }
     } else {
       if (harvesterSum < 1) {
         Memory[spawn] = makeHarvester(emergencyHarvester(), source);
+        //buildQueue.push(makeHarvester(emergencyHarvester(), source));
       } else if (harvesterSum < initialHarvesterCount) {
         Memory[spawn] = makeHarvester(scaleBalancedCreep(energyCap), source);
+        //buildQueue.push(makeHarvester(scaleBalancedCreep(energyCap), source));
       }
     }
+    //Memory[roomId].buildQueue = buildQueue;
   },
 };
