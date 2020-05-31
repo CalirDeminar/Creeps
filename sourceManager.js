@@ -1,4 +1,5 @@
 const initialHarvesterCount = 4;
+const constructionManager = require("constructionManager");
 function sumSourceHarvester(source) {
   return _.sum(
     Game.creeps,

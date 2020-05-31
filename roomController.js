@@ -1,4 +1,5 @@
 const sourceManager = require("sourceManager");
+const constructionManager = require("constructionManager");
 function sumRole(role) {
   return _.sum(Game.creeps, (c) => c.memory.role === role);
 }
@@ -28,14 +29,15 @@ function log(room) {
     `\n\n\n\n\n\n\n\n\n` +
       `Room: ${room.name}\n` +
       `Energy: ${currentEnergy}/${energyCap}\n` +
-      `Energy Budget: ${energyBudget} //t\n` +
+      `Energy Budget: ${energyBudget} /t\n` +
       `Creeps:\n` +
-      ` Upkeep: ${upkeepCost} //t\n` +
+      ` Upkeep: ${upkeepCost} /t\n` +
       ` Harvesters: ${harvesters}\n` +
       ` Upgraders: ${upgraders}\n` +
       ` Builders: ${builders}\n` +
       ` Repairer: ${repairers}\n` +
-      ` Hauler: ${haulers}\n`
+      ` Hauler: ${haulers}\n` +
+      `\n\n ${Game.time}`
   );
 }
 function memorySetup(room) {
@@ -58,9 +60,10 @@ module.exports = {
   run(room) {
     const rcl = room.controller.level;
     memorySetup(room);
+    constructionManager.buildLevelLimitedStructures(room);
     const sources = room.find(FIND_SOURCES);
     for (let sourceName in sources) {
-      //sourceManager.harvesterSetup(sources[sourceName]);
+      sourceManager.harvesterSetup(sources[sourceName]);
     }
     if (Game.time % 5 === 0) {
       log(room);

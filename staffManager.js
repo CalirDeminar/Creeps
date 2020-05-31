@@ -12,11 +12,10 @@ function emergencyHarvester() {
   return [WORK, CARRY, MOVE];
 }
 function scaleBalancedCreep(energy) {
-  const noParts = Math.floor(energy / 200);
-  let body = [];
+  const noParts = Math.floor((energy - 100) / 150);
+  let body = energy < 350 ? [CARRY] : [CARRY, CARRY];
   for (let i = 0; i < noParts; i++) {
     body.push(WORK);
-    body.push(CARRY);
     body.push(MOVE);
   }
   return body;

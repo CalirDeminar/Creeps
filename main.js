@@ -43,11 +43,10 @@ module.exports.loop = function () {
   for (let tower of towers) {
     towerR.run(tower);
   }
-  for (room in Game.rooms) {
+  for (let room in Game.rooms) {
     roomController.run(Game.rooms[room]);
   }
   staffManager.run();
-  constructionManager.buildExtensions(0);
 };
 
 // starting phases
