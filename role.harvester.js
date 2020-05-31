@@ -1,5 +1,5 @@
 const { dropRoad } = require("creepUtil");
-const pathColour = "#ff9700";
+const pathColour = "orange";
 function getStructureToStore(creep) {
   const storage = [STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_CONTAINER];
   const output = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -12,7 +12,7 @@ function getStructureToStore(creep) {
               storage.includes(s.structureType) && s.energy < s.energyCapacity
             );
           case STRUCTURE_CONTAINER:
-            return s.store.energy < 5000;
+            return s.store[RESOURCE_ENERGY] < 2000;
         }
       } else {
         return false;
@@ -23,7 +23,10 @@ function getStructureToStore(creep) {
 }
 module.exports = {
   run: function (creep) {
-    if (!creep.memory.working && creep.carry.energy == 0) {
+    if (
+      (!creep.memory.working && creep.carry.energy == 0) ||
+      creep.carryCapacity === 0
+    ) {
       // if empty, set to work
       const index = Memory.toStore.filter(
         (e) => e === creep.memory.storeTarget

@@ -1,4 +1,5 @@
 const { getStructureToHarvest, dropRoad } = require("creepUtil");
+const pathColour = "green";
 module.exports = {
   run: function (creep) {
     dropRoad(creep);
@@ -16,7 +17,7 @@ module.exports = {
       if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
         // if out of range of controller, move to controller
         creep.moveTo(creep.room.controller, {
-          visualizePathStyle: { stroke: "#ffaa00" },
+          visualizePathStyle: { stroke: pathColour },
         });
       }
     } else if (Memory.Spawn1 === undefined) {
@@ -25,7 +26,7 @@ module.exports = {
       const target = getStructureToHarvest(creep);
       const withdrawResult = creep.withdraw(target, RESOURCE_ENERGY);
       if (withdrawResult == ERR_NOT_IN_RANGE) {
-        creep.moveTo(target, { visualizePathStyle: { stroke: "#ffaa00" } });
+        creep.moveTo(target, { visualizePathStyle: { stroke: pathColour } });
       } else if (withdrawResult !== 0) {
         creep.memory.target = undefined;
       }

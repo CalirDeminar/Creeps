@@ -17,23 +17,11 @@ function sumRole(role) {
 }
 function staticHarvester(energy) {
   if (energy >= 750) {
-    return [
-      WORK,
-      WORK,
-      WORK,
-      WORK,
-      WORK,
-      CARRY,
-      CARRY,
-      CARRY,
-      CARRY,
-      CARRY,
-      MOVE,
-    ];
+    return [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE];
   } else if (energy >= 650) {
-    return [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE];
+    return [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE];
   } else if (energy >= 550) {
-    return [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE];
+    return [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE];
   } else {
     return scaleBalancedCreep(energy);
   }
@@ -42,6 +30,7 @@ function scaleHaulingCreep(energy) {
   const noParts = Math.floor(energy / 150);
   let body = [];
   for (let i = 0; i < noParts; i++) {
+    body.push(CARRY);
     body.push(CARRY);
     body.push(MOVE);
   }

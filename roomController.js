@@ -45,7 +45,7 @@ function memorySetup(room) {
   // -> buildQueue (TODO order harvester -> hauler -> builder -> upgrader -> repaier)
   if (!Object.keys(Memory).includes(room.name)) {
     console.log("Blanking Room");
-    Memory[room.name] = { buildQueue: [] };
+    Memory[room.name] = { buildQueue: [], baseTile: Game.spawns.Spawn1.pos };
   }
 }
 function getEnergyBudget(room) {

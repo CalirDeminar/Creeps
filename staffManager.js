@@ -25,6 +25,7 @@ function scaleHaulingCreep(energy) {
   let body = [];
   for (let i = 0; i < noParts; i++) {
     body.push(CARRY);
+    body.push(CARRY);
     body.push(MOVE);
   }
   return body;
