@@ -16,12 +16,13 @@ function sumRole(role) {
   return _.sum(Game.creeps, (c) => c.memory.role === role);
 }
 function staticHarvester(energy) {
-  if (energy >= 750) {
-    return [WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE];
-  } else if (energy >= 650) {
-    return [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE];
-  } else if (energy >= 550) {
-    return [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE];
+  const workParts = Math.floor((energy - 150) / 100);
+  let body = [CARRY, MOVE, MOVE];
+  if (workParts >= 4) {
+    for (let i = 0; i < workParts && i < 5; i++) {
+      body.push(WORK);
+    }
+    return body;
   } else {
     return scaleBalancedCreep(energy);
   }
@@ -58,17 +59,25 @@ module.exports = {
     })[0];
     const energyCap = source.room.energyCapacityAvailable;
     const harvesterSum = sumSourceHarvester(source);
+    const harvesters = _.filter(
+      Game.creeps,
+      (c) => c.memory.target === source.id
+    );
     const spawn = "Spawn1";
     if (container) {
-      if (harvesterSum < 1) {
+      // spawn harvester if harvester is missing or has < 100 ticks to live
+      if (
+        harvesters.length < 1 ||
+        (harvesters.length === 1 && harvesters[0].ticksToLive < 100)
+      ) {
         Memory[spawn] = makeHarvester(staticHarvester(energyCap), source);
         //buildQueue.push(makeHarvester(staticHarvester(energyCap), source));
       } else {
-        const haulers = _.sum(
+        const haulers = _.filter(
           Game.creeps,
           (c) => c.memory.role === "hauler" && c.memory.target === container.id
         );
-        if (!haulers) {
+        if (haulers.length === 0 || haulers[0].ticksToLive < 100) {
           Memory[spawn] = {
             template: scaleHaulingCreep(energyCap),
             memory: { role: "hauler", target: container.id, working: false },
@@ -80,10 +89,10 @@ module.exports = {
         }
       }
     } else {
-      if (harvesterSum < 1) {
+      if (harvesters.length < 1) {
         Memory[spawn] = makeHarvester(emergencyHarvester(), source);
         //buildQueue.push(makeHarvester(emergencyHarvester(), source));
-      } else if (harvesterSum < initialHarvesterCount) {
+      } else if (harvesters.length < initialHarvesterCount) {
         Memory[spawn] = makeHarvester(scaleBalancedCreep(energyCap), source);
         //buildQueue.push(makeHarvester(scaleBalancedCreep(energyCap), source));
       }

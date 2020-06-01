@@ -61,26 +61,28 @@ module.exports = {
     const spawn = room.find(FIND_MY_STRUCTURES, {
       filter: (s) => s.structureType === STRUCTURE_SPAWN,
     })[0];
-    let spawnPos = spawn.pos;
-    spawnPos.x = spawnPos.x + 1;
     const towers = room.find(FIND_STRUCTURES, {
       filter: (s) => s.structureType === STRUCTURE_TOWER,
     });
     if (towers.length === 0) {
-      room.createConstructionSite(spawnPos, STRUCTURE_TOWER);
+      room.createConstructionSite(
+        new roomPosition(spawn.pos.x + 1, spawn.pos.y, spawn.pos.roomName),
+        STRUCTURE_TOWER
+      );
     }
   },
   buildStorage: function (room) {
     const spawn = room.find(FIND_MY_STRUCTURES, {
       filter: (s) => s.structureType === STRUCTURE_SPAWN,
     })[0];
-    let spawnPos = spawn.pos;
-    spawnPos.x = spawnPos.x - 1;
     const storage = room.find(FIND_STRUCTURES, {
       filter: (s) => s.structureType === STRUCTURE_STORAGE,
     });
     if (storage.length === 0) {
-      room.createConstructionSite(spawnPos, STRUCTURE_STORAGE);
+      room.createConstructionSite(
+        new RoomPosition(spawn.pos.x - 1, spawn.pos.y, spawn.pos.roomName),
+        STRUCTURE_STORAGE
+      );
     }
   },
   getAdjacentTile: function (pos, depth) {

@@ -28,12 +28,14 @@ function getStructureToStore(creep) {
 }
 module.exports = {
   run: function (creep) {
+    const container = Game.getObjectById(creep.memory.target);
     if (creep.memory.working && creep.carry.energy === 0) {
       // if carry energy to controller AND empty
       creep.memory.working = false;
     } else if (
       !creep.memory.working &&
-      creep.carry.energy == creep.carryCapacity
+      (creep.carry.energy === creep.carryCapacity ||
+        container.store[RESOURCE_ENERGY] === 0)
     ) {
       // if harvesting but full
       creep.memory.working = true;
