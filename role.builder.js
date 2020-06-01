@@ -13,7 +13,8 @@ module.exports = {
       creep.memory.working = false;
     } else if (
       !creep.memory.working &&
-      creep.carry.energy == creep.carryCapacity
+      (creep.carry.energy === creep.carryCapacity ||
+        getStructureToHarvest(creep) === undefined)
     ) {
       // if harvesting but full
       creep.memory.working = true;

@@ -3,9 +3,7 @@ module.exports = {
   getStructureToStore: function (creep) {
     const output = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: (s) =>
-        storage.includes(s.structureType) &&
-        s.energy < s.energyCapacity &&
-        !Memory.toStore.includes(s.id),
+        storage.includes(s.structureType) && s.energy < s.energyCapacity,
     });
     if (output) {
       return output;
@@ -17,8 +15,7 @@ module.exports = {
   },
   getStructureToHarvest: function (creep) {
     const storage = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: (s) =>
-        s.structureType === STRUCTURE_STORAGE && s.store[RESOURCE_ENERGY] > 5,
+      filter: (s) => s.structureType === STRUCTURE_STORAGE,
     });
     if (storage) {
       return storage;
