@@ -48,39 +48,44 @@ function checkVacancies(spawn) {
   const upgraders = 2;
   const builders = 2;
   const repairers = 1;
+  const scout = Game.flags !== {} ? 1 : 0;
+  const remoteHarvester = 0;
   if (Memory[spawn] === undefined) {
     if (sumRole("upgrader") < upgraders) {
       Memory[spawn] = {
         template: scaleBalancedCreep(energyCap),
         memory: { role: "upgrader", target: undefined, working: false },
       };
-      //buildQueue.push({
-      //  template: scaleBalancedCreep(energyCap),
-      //  memory: { role: "upgrader", target: undefined, working: false },
-      //});
     } else if (sumRole("builder") < builders) {
       Memory[spawn] = {
         template: scaleBalancedCreep(energyCap),
         memory: { role: "builder", target: undefined, working: false },
       };
-      //buildQueue.push({
-      //  template: scaleBalancedCreep(energyCap),
-      //  memory: { role: "builder", target: undefined, working: false },
-      //});
     } else if (sumRole("repairer") < repairers) {
       Memory[spawn] = {
         template: scaleBalancedCreep(energyCap),
         memory: { role: "repairer", target: undefined, working: false },
       };
-      //buildQueue.push({
-      //  template: scaleBalancedCreep(energyCap),
-      //  memory: { role: "repairer", target: undefined, working: false },
-      //});
-    }
-    //Memory[spawnObj.room.name].buildQueue = buildQueue;
-    for (let sourceName in sources) {
-      const source = sources[sourceName];
-      sourceManager.harvesterSetup(source);
+    } else if (sumRole("scout") < scout) {
+      Memory[spawn] = { template: [MOVE], memory: { role: "scout" } };
+    } else {
+      const stoppedRemote = _.findIndex(
+        Memory.remotes,
+        (r) => r.lastSpawned === undefined || Game.time - r.lastSpawned > 1500
+      );
+      if (stoppedRemote != -1) {
+        console.log(stoppedRemote);
+        Memory[spawn] = {
+          template: scaleBalancedCreep(energyCap),
+          memory: {
+            role: "remoteHarvester",
+            targetRoom: Memory.remotes[stoppedRemote].roomName,
+            targetSource: Memory.remotes[stoppedRemote].sourceId,
+            home: spawnObj.pos.roomName,
+          },
+        };
+        Memory.remotes[stoppedRemote].lastSpawned = Game.time;
+      }
     }
   }
 }

@@ -1,8 +1,10 @@
 const harvester = require("role.harvester");
+const remoteHarvester = require("role.remoteHarvester");
 const upgrader = require("role.upgrader");
 const builder = require("role.builder");
 const repairer = require("role.repairer");
 const hauler = require("role.hauler");
+const scout = require("role.scout");
 const towerR = require("tower");
 const staffManager = require("staffManager");
 const constructionManager = require("constructionManager");
@@ -24,6 +26,9 @@ module.exports.loop = function () {
       case "harvester":
         harvester.run(creep);
         break;
+      case "remoteHarvester":
+        remoteHarvester.run(creep);
+        break;
       case "upgrader":
         upgrader.run(creep);
         break;
@@ -32,6 +37,9 @@ module.exports.loop = function () {
         break;
       case "repairer":
         repairer.run(creep);
+        break;
+      case "scout":
+        scout.run(creep);
         break;
       case "hauler":
         hauler.run(creep);

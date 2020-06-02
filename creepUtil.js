@@ -2,8 +2,15 @@ const storage = [STRUCTURE_SPAWN, STRUCTURE_EXTENSION, STRUCTURE_CONTAINER];
 module.exports = {
   getStructureToStore: function (creep) {
     const output = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: (s) =>
-        storage.includes(s.structureType) && s.energy < s.energyCapacity,
+      filter: (s) => {
+        if (s.structureType !== STRUCTURE_STORAGE) {
+          return (
+            storage.includes(s.structureType) && s.energy < s.energyCapacity
+          );
+        } else {
+          return true;
+        }
+      },
     });
     if (output) {
       return output;
@@ -35,9 +42,6 @@ module.exports = {
       creep.pos.x,
       creep.pos.y
     )[0];
-    const towers = creep.room.find(FIND_STRUCTURES, {
-      filter: (s) => s.structureType === STRUCTURE_TOWER,
-    })[0];
     if (terrain !== "plain") {
     }
     if (

@@ -77,7 +77,7 @@ module.exports = {
           Game.creeps,
           (c) => c.memory.role === "hauler" && c.memory.target === container.id
         );
-        if (haulers.length === 0 || haulers[0].ticksToLive < 100) {
+        if (haulers.length === 0 || (haulers.length === 1 && haulers[0].ticksToLive < 100)) {
           Memory[spawn] = {
             template: scaleHaulingCreep(energyCap),
             memory: { role: "hauler", target: container.id, working: false },

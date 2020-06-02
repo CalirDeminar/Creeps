@@ -8,6 +8,7 @@ function log(room) {
   const energyBudget = getEnergyBudget(room);
   const currentEnergy = room.energyAvailable;
   const harvesters = sumRole("harvester");
+  const remoteHarvesters = sumRole("remoteHarvester");
   const upgraders = sumRole("upgrader");
   const builders = sumRole("builder");
   const repairers = sumRole("repairer");
@@ -33,6 +34,7 @@ function log(room) {
       `Creeps:\n` +
       ` Upkeep: ${upkeepCost} /t\n` +
       ` Harvesters: ${harvesters}\n` +
+      ` Remote Harvesters ${remoteHarvesters}\n` +
       ` Upgraders: ${upgraders}\n` +
       ` Builders: ${builders}\n` +
       ` Repairer: ${repairers}\n` +
@@ -58,15 +60,16 @@ function getEnergyBudget(room) {
 }
 module.exports = {
   run(room) {
-    const rcl = room.controller.level;
-    memorySetup(room);
-    constructionManager.buildLevelLimitedStructures(room);
-    const sources = room.find(FIND_SOURCES);
-    for (let sourceName in sources) {
-      sourceManager.harvesterSetup(sources[sourceName]);
-    }
-    if (Game.time % 5 === 0) {
-      log(room);
+    if (room.controller && room.controller.level >= 1) {
+      memorySetup(room);
+      constructionManager.buildLevelLimitedStructures(room);
+      const sources = room.find(FIND_SOURCES);
+      for (let sourceName in sources) {
+        sourceManager.harvesterSetup(sources[sourceName]);
+      }
+      if (Game.time % 5 === 0) {
+        log(room);
+      }
     }
   },
 };

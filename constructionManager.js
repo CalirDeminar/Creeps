@@ -17,12 +17,14 @@ module.exports = {
     const spawn = room.find(FIND_MY_STRUCTURES, {
       filter: (s) => s.structureType === STRUCTURE_SPAWN,
     })[0];
-    const rcl = room.controller.level;
-    const nextTiles = this.getAdjacentTile(spawn.pos, 1);
-    const clearTiles = _.filter(nextTiles, (t) => this.tileIsClear(t));
-    const tilesNeeded = Math.ceil(maxExtensions[rcl] / 5);
-    for (let i = 0; i < tilesNeeded; i++) {
-      this.buildStructures(clearTiles[i]);
+    if (spawn) {
+      const rcl = room.controller.level;
+      const nextTiles = this.getAdjacentTile(spawn.pos, 1);
+      const clearTiles = _.filter(nextTiles, (t) => this.tileIsClear(t));
+      const tilesNeeded = Math.ceil(maxExtensions[rcl] / 5);
+      for (let i = 0; i < tilesNeeded && i < clearTiles.length; i++) {
+        this.buildStructures(clearTiles[i]);
+      }
     }
   },
   buildContainers: function (room) {
@@ -64,9 +66,14 @@ module.exports = {
     const towers = room.find(FIND_STRUCTURES, {
       filter: (s) => s.structureType === STRUCTURE_TOWER,
     });
-    if (towers.length === 0) {
+    if (towers.length < 1) {
       room.createConstructionSite(
-        new roomPosition(spawn.pos.x + 1, spawn.pos.y, spawn.pos.roomName),
+        new RoomPosition(spawn.pos.x + 2, spawn.pos.y, spawn.pos.roomName),
+        STRUCTURE_TOWER
+      );
+    } else if (towers.length < 2 && room.controller.level >= 5) {
+      room.createConstructionSite(
+        new RoomPosition(spawn.pos.x - 2, spawn.pos.y, spawn.pos.roomName),
         STRUCTURE_TOWER
       );
     }
@@ -80,7 +87,7 @@ module.exports = {
     });
     if (storage.length === 0) {
       room.createConstructionSite(
-        new RoomPosition(spawn.pos.x - 1, spawn.pos.y, spawn.pos.roomName),
+        new RoomPosition(spawn.pos.x, spawn.pos.y + 2, spawn.pos.roomName),
         STRUCTURE_STORAGE
       );
     }
@@ -88,21 +95,21 @@ module.exports = {
   getAdjacentTile: function (pos, depth) {
     const above = {
       x: pos.x,
-      y: pos.y + depth * tileWidth,
+      y: pos.y + (depth * tileWidth + 1),
       roomName: pos.roomName,
     };
     const below = {
       x: pos.x,
-      y: pos.y - depth * tileWidth,
+      y: pos.y - (depth * tileWidth + 1),
       roomName: pos.roomName,
     };
     const left = {
-      x: pos.x - depth * tileWidth,
+      x: pos.x - (depth * tileWidth + 1),
       y: pos.y,
       roomName: pos.roomName,
     };
     const right = {
-      x: pos.x + depth * tileWidth,
+      x: pos.x + (depth * tileWidth + 1),
       y: pos.y,
       roomName: pos.roomName,
     };
