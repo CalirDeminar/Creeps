@@ -19,7 +19,9 @@ module.exports = {
     })[0];
     if (spawn) {
       const rcl = room.controller.level;
-      const nextTiles = this.getAdjacentTile(spawn.pos, 1);
+      const nextTiles = this.getAdjacentTile(spawn.pos, 1).concat(
+        this.getAdjacentTile(spawn.pos, 2)
+      );
       const clearTiles = _.filter(nextTiles, (t) => this.tileIsClear(t));
       const tilesNeeded = Math.ceil(maxExtensions[rcl] / 5);
       for (let i = 0; i < tilesNeeded && i < clearTiles.length; i++) {
@@ -93,30 +95,60 @@ module.exports = {
     }
   },
   getAdjacentTile: function (pos, depth) {
-    const above = {
+    const north = {
       x: pos.x,
       y: pos.y + (depth * tileWidth + 1),
       roomName: pos.roomName,
     };
-    const below = {
+    const south = {
       x: pos.x,
       y: pos.y - (depth * tileWidth + 1),
       roomName: pos.roomName,
     };
-    const left = {
+    const east = {
       x: pos.x - (depth * tileWidth + 1),
       y: pos.y,
       roomName: pos.roomName,
     };
-    const right = {
+    const west = {
       x: pos.x + (depth * tileWidth + 1),
       y: pos.y,
       roomName: pos.roomName,
     };
-    return [left, below, right, above];
+    const northWest = {
+      x: pos.x + (depth * (tileWidth / 2) + 1),
+      y: pos.y + (depth * (tileWidth / 2) + 1),
+      roomName: pos.roomName,
+    };
+    const northEast = {
+      x: pos.x - (depth * (tileWidth / 2) + 1),
+      y: pos.y + (depth * (tileWidth / 2) + 1),
+      roomName: pos.roomName,
+    };
+    const southEast = {
+      x: pos.x - (depth * (tileWidth / 2) + 1),
+      y: pos.y - (depth * (tileWidth / 2) + 1),
+      roomName: pos.roomName,
+    };
+    const southWest = {
+      x: pos.x + (depth * (tileWidth / 2) + 1),
+      y: pos.y - (depth * (tileWidth / 2) + 1),
+      roomName: pos.roomName,
+    };
+    return [
+      west,
+      south,
+      east,
+      north,
+      northWest,
+      northEast,
+      southEast,
+      southWest,
+    ];
   },
   tileIsClear: function (pos) {
     const terrain = Game.map.getRoomTerrain(pos.roomName);
+    const room = Game.rooms[pos.roomName];
     let output = true;
     for (let x = -1; x <= 1; x++) {
       for (let y = -1; y <= 1; y++) {
@@ -125,6 +157,29 @@ module.exports = {
       }
     }
     return output;
+  },
+  getFreeTile: function (pos) {
+    let searchRad = tileWidth + 1;
+    let output = undefined;
+    while (!output) {
+      for (let x = searchRad * -1; x < searchRad; x++) {
+        for (let y = searchRad * -1; y < searchRad; y++) {
+          const searchPos = new RoomPosition(
+            pos.x + x,
+            pos.y + y,
+            pos.roomName
+          );
+          if (
+            Math.abs(x) > tileWidth &&
+            Math.abs(y) > tileWidth &&
+            this.tileIsClear(searchPos)
+          ) {
+            output = searchPos;
+          }
+        }
+      }
+      searchRad++;
+    }
   },
   buildStructures: function (pos) {
     const room = Game.rooms[pos.roomName];

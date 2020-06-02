@@ -45,9 +45,8 @@ module.exports = {
     }
     if (creep.memory.working) {
       // if working, harvest source. If not in range, move into range
-      const source = creep.memory.target
-        ? Game.getObjectById(creep.memory.targetSource)
-        : creep.pos.findClosestByPath(FIND_SOURCES);
+      const source = Game.getObjectById(creep.memory.targetSource);
+      // if in target room
       if (creep.pos.roomName === creep.memory.targetRoom) {
         if (creep.harvest(source) !== 0) {
           const container = source.pos.findInRange(FIND_STRUCTURES, 1, {
@@ -58,6 +57,7 @@ module.exports = {
           });
         }
       } else {
+        // find exit to target room
         const exit = creep.room.findExitTo(creep.memory.targetRoom);
         creep.moveTo(creep.pos.findClosestByPath(exit), {
           visualizePathStyle: { stroke: pathColour },
@@ -78,6 +78,7 @@ module.exports = {
           });
         }
       } else {
+        // find exit towards home room
         const exit = creep.room.findExitTo(creep.memory.home);
         creep.moveTo(creep.pos.findClosestByPath(exit), {
           visualizePathStyle: { stroke: pathColour },

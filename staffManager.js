@@ -48,7 +48,7 @@ function checkVacancies(spawn) {
   const upgraders = 2;
   const builders = 2;
   const repairers = 1;
-  const scout = Game.flags !== {} ? 1 : 0;
+  const scout = Object.keys(Game.flags).length > 0 ? 1 : 0;
   const remoteHarvester = 0;
   if (Memory[spawn] === undefined) {
     if (sumRole("upgrader") < upgraders) {
@@ -82,9 +82,12 @@ function checkVacancies(spawn) {
             targetRoom: Memory.remotes[stoppedRemote].roomName,
             targetSource: Memory.remotes[stoppedRemote].sourceId,
             home: spawnObj.pos.roomName,
+            working: false,
           },
         };
         Memory.remotes[stoppedRemote].lastSpawned = Game.time;
+        // TODO - move this to the spawning code
+        // - figure out why we're spawning > remoteHarvester per remote
       }
     }
   }
